@@ -518,9 +518,7 @@ async function loginMember(){
 }
 
 
-// 此版本採封閉會員制：前端不提供註冊或 Google 自行登入。
-  
-// 帳號請由管理者在 Firebase Console / Admin SDK 建立後，再提供給使用者登入。
+
 async function logoutMember(){
   if(!auth){
     alert("Firebase 尚未設定，無法登出。");
@@ -543,6 +541,13 @@ async function logoutMember(){
     updateAuthButtons();
   }
 }
+
+// 保險：讓瀏覽器全域也一定找得到 logoutMember
+window.logoutMember = logoutMember;
+
+// 此版本採封閉會員制：前端不提供註冊或 Google 自行登入。
+// 帳號請由管理者在 Firebase Console / Admin SDK 建立後，再提供給使用者登入。
+
 function normalizeHeader(h){
   return String(h || "").trim().toLowerCase()
     .replace(/\s/g,"")
@@ -1499,7 +1504,7 @@ bindClick("leaderboardBtnFinish", loadLeaderboard);
 bindClick("reloadLeaderboardBtn", loadLeaderboard);
 bindClick("hideLeaderboardBtn", () => $("leaderboardBox").classList.add("hidden"));
 bindClick("loginBtn", loginMember);
-bindClick("logoutBtn", logoutMember);
+bindClick("logoutBtn", () => logoutMember());
 if($("loginPassInput")) $("loginPassInput").addEventListener("keydown", e => { if(e.key === "Enter") loginMember(); });
 bindClick("themeToggleBtn", toggleTheme);
 bindClick("selectAllScopesBtn", () => setAllScopes(true));
