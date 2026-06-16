@@ -519,8 +519,30 @@ async function loginMember(){
 
 
 // 此版本採封閉會員制：前端不提供註冊或 Google 自行登入。
+  
 // 帳號請由管理者在 Firebase Console / Admin SDK 建立後，再提供給使用者登入。
+async function logoutMember(){
+  if(!auth){
+    alert("Firebase 尚未設定，無法登出。");
+    return;
+  }
 
+  try{
+    if($("logoutBtn")) $("logoutBtn").disabled = true;
+    setAuthStatus("登出中...", "guest");
+    await auth.signOut();
+
+    currentUser = null;
+    currentProfile = null;
+    if($("loginPassInput")) $("loginPassInput").value = "";
+    if($("leaderboardBox")) $("leaderboardBox").classList.add("hidden");
+    updateAuthButtons();
+  }catch(e){
+    console.error(e);
+    setAuthStatus("登出失敗：" + firebaseErrorMessage(e), "error");
+    updateAuthButtons();
+  }
+}
 function normalizeHeader(h){
   return String(h || "").trim().toLowerCase()
     .replace(/\s/g,"")
